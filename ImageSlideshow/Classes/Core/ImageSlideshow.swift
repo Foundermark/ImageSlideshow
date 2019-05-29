@@ -28,7 +28,7 @@ public protocol ImageSlideshowDelegate: class {
     @objc optional func imageSlideshowDidEndDecelerating(_ imageSlideshow: ImageSlideshow)
 }
 
-/** 
+/**
     Used to represent position of the Page Control
     - hidden: Page Control is hidden
     - insideScrollView: Page Control is inside image slideshow
@@ -78,6 +78,7 @@ open class ImageSlideshow: UIView {
         didSet {
             oldValue?.view.removeFromSuperview()
             if let pageIndicator = pageIndicator {
+                pageIndicator.view.isHidden = true
                 addSubview(pageIndicator.view)
             }
             setNeedsLayout()
@@ -174,7 +175,7 @@ open class ImageSlideshow: UIView {
             reloadScrollView()
         }
     }
-    
+
     /// Maximum zoom scale
     open var maximumScale: CGFloat = 2.0 {
         didSet {
@@ -209,7 +210,7 @@ open class ImageSlideshow: UIView {
 
     /// Transitioning delegate to manage the transition to full screen controller
     open fileprivate(set) var slideshowTransitioningDelegate: ZoomAnimatedTransitioningDelegate?
-    
+
     var primaryVisiblePage: Int {
         return scrollView.frame.size.width > 0 ? Int(scrollView.contentOffset.x + scrollView.frame.size.width / 2) / Int(scrollView.frame.size.width) : 0
     }
@@ -250,7 +251,7 @@ open class ImageSlideshow: UIView {
         if let pageIndicator = pageIndicator {
             addSubview(pageIndicator.view)
         }
-        
+
         if let pageIndicator = pageIndicator as? UIControl {
             pageIndicator.addTarget(self, action: #selector(pageControlValueChanged), for: .valueChanged)
         }
@@ -276,7 +277,7 @@ open class ImageSlideshow: UIView {
 
     open func layoutPageControl() {
         if let pageIndicatorView = pageIndicator?.view {
-            pageIndicatorView.isHidden = images.count < 2
+            pageIndicatorView.isHidden = true // images.count < 2
 
             var edgeInsets: UIEdgeInsets = UIEdgeInsets.zero
             if #available(iOS 11.0, *) {
@@ -447,7 +448,7 @@ open class ImageSlideshow: UIView {
         scrollViewPage = page
         currentPage = currentPageForScrollViewPage(page)
     }
-    
+
     fileprivate func currentPageForScrollViewPage(_ page: Int) -> Int {
         if circular {
             if page == 0 {
